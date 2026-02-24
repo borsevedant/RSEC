@@ -196,6 +196,25 @@ body::after {
     overflow: hidden;
 }
 
+@media (max-width: 1024px) {
+    .dashboard-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .map-viewport {
+        height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .alerts-sidebar {
+        height: 50vh;
+    }
+}
+
 .map-viewport {
     position: relative;
     border-right: 1px solid var(--border);
@@ -251,10 +270,12 @@ body::after {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) #000;
 }
 
 .incident-feed::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .incident-feed::-webkit-scrollbar-track {
@@ -263,7 +284,7 @@ body::after {
 
 .incident-feed::-webkit-scrollbar-thumb {
     background: var(--border);
-    border-radius: 0;
+    border: 2px solid #000;
 }
 
 .incident-feed::-webkit-scrollbar-thumb:hover {
