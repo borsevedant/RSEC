@@ -97,17 +97,35 @@ const users = {
   "admin": { password: "admin@123", role: "admin" }
 };
 
-const tokens = new Map();
+const SECRET_KEY = process.env.JWT_SECRET || "RSECS_SECURE_NODE_KEY_2026";
 
-function makeToken() {
-  return crypto.randomBytes(24).toString("hex");
+function makeToken(username, role) {
+  const ts = Date.now();
+  const data = `${username}:${role}:${ts}`;
+  const sig = crypto.createHmac('sha256', SECRET_KEY).update(data).digest('hex');
+  return Buffer.from(`${data}:${sig}`).toString('base64');
 }
 
 function authRequired(req, res, next) {
   const token = req.header("X-Auth-Token") || req.query.token;
-  if (!token || !tokens.has(token)) return res.status(401).json({ error: "Unauthorized" });
-  req.user = tokens.get(token);
-  next();
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+  try {
+    const decoded = Buffer.from(token, 'base64').toString('utf8');
+    const [username, role, ts, sig] = decoded.split(':');
+
+    // Verify signature
+    const expectedSig = crypto.createHmac('sha256', SECRET_KEY).update(`${username}:${role}:${ts}`).digest('hex');
+    if (sig !== expectedSig) return res.status(401).json({ error: "Invalid Token" });
+
+    // Optional: Check expiration (7 days for demo)
+    if (Date.now() - parseInt(ts) > 7 * 24 * 60 * 60 * 1000) return res.status(401).json({ error: "Token Expired" });
+
+    req.user = { username, role };
+    next();
+  } catch (e) {
+    return res.status(401).json({ error: "Malformed Token" });
+  }
 }
 
 function requireRole(minRole) {
@@ -208,15 +226,13 @@ app.post("/api/login", (req, res) => {
 
   // Logic: Allow specific password OR the legacy 'admin123' password
   if (user && (user.password === password || password === "admin123")) {
-    const token = makeToken();
-    tokens.set(token, { username: normalizedUser, role: user.role, createdAt: new Date().toISOString() });
+    const token = makeToken(normalizedUser, user.role);
     return res.json({ token, role: user.role });
   }
 
   // Fallback for direct "Admin" login with previous password
   if (normalizedUser === "admin" && password === "admin123") {
-    const token = makeToken();
-    tokens.set(token, { username: "admin", role: "admin", createdAt: new Date().toISOString() });
+    const token = makeToken("admin", "admin");
     return res.json({ token, role: "admin" });
   }
 
