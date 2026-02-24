@@ -1,5 +1,5 @@
 let currentEmergencyType = '';
-let pin = '';
+let pin = '1234';
 const correctPin = '1234';
 const deviceId = "RSECS-001";
 

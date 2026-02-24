@@ -323,8 +323,8 @@
 
       err.textContent = "";
 
-      if (password !== "admin123") {
-        err.textContent = "Invalid Security Key. Access Denied.";
+      if (!username || !password) {
+        err.textContent = "Please enter both username and password.";
         return;
       }
 
@@ -349,7 +349,7 @@
         tempRole = data.role;
         tempUser = username;
 
-        // Auto-approve MFA for demo/production readiness as per user simplified password request
+        // Session storage for identified role
         sessionStorage.setItem("RSECS_TOKEN", tempToken);
         sessionStorage.setItem("RSECS_ROLE", tempRole);
         sessionStorage.setItem("RSECS_USER", tempUser);

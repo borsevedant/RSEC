@@ -91,7 +91,9 @@ function addToAuditLog(emergency, action, by, details = {}) {
    AUTH LOGIC
 ========================= */
 const users = {
-  "admin": { password: "admin123", role: "admin" }
+  "operator": { password: "operator@123", role: "operator" },
+  "supervisor": { password: "supervisor@123", role: "supervisor" },
+  "admin": { password: "admin@123", role: "admin" }
 };
 
 const tokens = new Map();
@@ -108,10 +110,10 @@ function authRequired(req, res, next) {
 }
 
 function requireRole(minRole) {
+  const roleLevels = { "operator": 1, "supervisor": 2, "admin": 3 };
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: "Unauthorized" });
-    // In this unified model, admin is the only role needed for protected actions
-    if (req.user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
+    if (roleLevels[req.user.role] < roleLevels[minRole]) return res.status(403).json({ error: "Forbidden" });
     next();
   };
 }
@@ -200,14 +202,16 @@ function findEmergency(id) {
 ========================= */
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body || {};
-  // Simplified logic as per request: admin123 is the key
-  if (password !== "admin123") return res.status(401).json({ error: "Invalid password" });
+  const user = users[(username || "").toLowerCase()];
+
+  if (!user || user.password !== password) {
+    return res.status(401).json({ error: "Invalid username or password" });
+  }
 
   const token = makeToken();
-  const userRole = username === "admin" ? "admin" : "user";
-  tokens.set(token, { username: username || "anonymous", role: userRole, createdAt: new Date().toISOString() });
+  tokens.set(token, { username: (username || "").toLowerCase(), role: user.role, createdAt: new Date().toISOString() });
 
-  res.json({ token, role: userRole });
+  res.json({ token, role: user.role });
 });
 
 app.get("/api/emergencies", authRequired, (req, res) => {
