@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R-SECS | Control Room Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --card: #16161a;
+            --accent: #00f2ff;
+            --text: #ffffff;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .login-card {
+            background: var(--card);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--accent);
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 14px;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .msg {
+            margin-top: 15px;
+            color: #ff3b30;
+            min-height: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <h1>R-SECS ACCESS</h1>
+        <div class="input-group">
+            <label>Operator Username</label>
+            <input type="text" id="username" value="operator1">
+        </div>
+        <div class="input-group">
+            <label>Credential Key</label>
+            <input type="password" id="password" value="op123">
+        </div>
+        <button onclick="login()">AUTHORIZE ACCESS</button>
+        <div id="msg" class="msg"></div>
+    </div>
+
+    <script>
+        async function login() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const msg = document.getElementById('msg');
+
+            msg.textContent = "Verifying...";
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('RSECS_TOKEN', data.token);
+                    localStorage.setItem('RSECS_USER', data.username);
+                    localStorage.setItem('RSECS_ROLE', data.role);
+                    window.location.href = 'index.html';
+                } else {
+                    msg.textContent = data.error || "Login Failed";
+                }
+            } catch (e) {
+                msg.textContent = "Network Error";
+            }
+        }
+    </script>
+</body>
+
+</html>

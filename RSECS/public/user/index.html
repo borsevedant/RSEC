@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R-SECS | Emergency Panic Button</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="lang-bar">
+        <button class="lang-btn" onclick="changeLanguage('en')">English</button>
+        <button class="lang-btn" onclick="changeLanguage('hi')">हिंदी</button>
+        <button class="lang-btn" onclick="changeLanguage('mr')">मराठी</button>
+    </div>
+
+    <!-- STAGE 1: PANIC -->
+    <div id="panicStage" class="stage">
+        <div class="panic-circle" onclick="openPinModal()" data-i18n="emergency">EMERGENCY</div>
+        <p data-i18n="tapHelp">TAP TO GET HELP IMMEDIATELY</p>
+    </div>
+
+    <!-- STAGE 2: PIN MODAL -->
+    <div id="pinModal" class="stage hidden">
+        <h1 data-i18n="enterPin">Enter PIN</h1>
+        <p data-i18n="verifyIdentity">Security check to prevent false alarms</p>
+        <div id="pinDisplay" class="pin-display"></div>
+        <div class="grid">
+            <button class="key" onclick="enterDigit('1')">1</button>
+            <button class="key" onclick="enterDigit('2')">2</button>
+            <button class="key" onclick="enterDigit('3')">3</button>
+            <button class="key" onclick="enterDigit('4')">4</button>
+            <button class="key" onclick="enterDigit('5')">5</button>
+            <button class="key" onclick="enterDigit('6')">6</button>
+            <button class="key" onclick="enterDigit('7')">7</button>
+            <button class="key" onclick="enterDigit('8')">8</button>
+            <button class="key" onclick="enterDigit('9')">9</button>
+            <button class="key" style="color:var(--primary)" onclick="cancelAlert()">✕</button>
+            <button class="key" onclick="enterDigit('0')">0</button>
+            <button class="key" onclick="backspace()">⌫</button>
+        </div>
+    </div>
+
+    <!-- STAGE 3: SELECT TYPE -->
+    <div id="typeStage" class="stage hidden">
+        <h1 data-i18n="selectEmergency">Select Help Needed</h1>
+        <p data-i18n="whatHelp">Emergency units depend on your Choice</p>
+
+        <div class="type-grid">
+            <button class="type-btn" onclick="selectType('Medical')">
+                <span>🚑</span>
+                <span data-i18n="medical">Medical</span>
+            </button>
+            <button class="type-btn" onclick="selectType('Fire')">
+                <span>🔥</span>
+                <span data-i18n="fire">Fire</span>
+            </button>
+            <button class="type-btn" onclick="selectType('Crime')">
+                <span>👮</span>
+                <span data-i18n="crime">Police</span>
+            </button>
+            <button class="type-btn" onclick="selectType('Disaster')">
+                <span>⛈️</span>
+                <span data-i18n="disaster">Disaster</span>
+            </button>
+        </div>
+
+        <div class="cancel-txt" onclick="resetToPanic()" data-i18n="cancel">Cancel</div>
+    </div>
+
+    <!-- STAGE 4: SUCCESS / TRACKING -->
+    <div id="successScreen" class="stage hidden">
+        <div class="status-card">
+            <div class="loader"></div>
+            <h1 data-i18n="alertSent">Alert Transmitted!</h1>
+            <p data-i18n="helpOnWay">Responders are investigating your location. Stay calm and stay where you are.</p>
+
+            <div class="location-box">
+                <b>[GPS_STATUS] ACTIVE</b><br>
+                <span id="locationText">Acquiring detailed coordinates...</span>
+            </div>
+        </div>
+        <div class="cancel-txt" onclick="location.reload()" data-i18n="returnHome">Back to Safety</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

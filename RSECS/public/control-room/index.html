@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R-SECS | Emergency Control Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <aside>
+        <header>
+            <div class="logo">
+                <div class="status-dot"></div>
+                R-SECS CONTROL
+            </div>
+            <div id="clock">00:00:00</div>
+        </header>
+
+        <div class="user-info">
+            OPERATOR: <span id="who">...</span>
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+        </div>
+
+        <div id="emergencyList">
+            <div style="text-align:center; padding:40px; color:#555;">
+                <p>Waiting for network authentication...</p>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <div id="map"></div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

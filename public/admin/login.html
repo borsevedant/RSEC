@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>R-SECS Control Room | Security Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #08080a;
+      --card-bg: #121214;
+      --accent: #00f2ff;
+      --operator-color: #ff3b30;
+      --supervisor-color: #007aff;
+      --admin-color: #ffcc00;
+      --success: #34c759;
+      --text-main: #e0e0e0;
+      --text-dim: #888;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .background-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: -1;
+    }
+
+    .gateway-container {
+      width: 450px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 100px rgba(0, 242, 255, 0.05);
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .role-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .role-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .role-btn i {
+      font-size: 20px;
+    }
+
+    .role-btn span {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .role-btn.active {
+      background: rgba(0, 242, 255, 0.1);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+    }
+
+    .role-btn.active.operator-role {
+      border-color: var(--operator-color);
+      color: var(--operator-color);
+      background: rgba(255, 59, 48, 0.1);
+    }
+
+    .role-btn.active.supervisor-role {
+      border-color: var(--supervisor-color);
+      color: var(--supervisor-color);
+      background: rgba(0, 122, 255, 0.1);
+    }
+
+    .role-btn.active.admin-role {
+      border-color: var(--admin-color);
+      color: var(--admin-color);
+      background: rgba(255, 204, 0, 0.1);
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .input-group input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: white;
+      font-family: inherit;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      border-color: var(--accent);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--accent);
+      color: black;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);
+    }
+
+    .mfa-input {
+      text-align: center;
+      font-size: 32px;
+      letter-spacing: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .err-msg {
+      color: var(--operator-color);
+      font-size: 13px;
+      margin-top: 15px;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    .hint-text {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 25px;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 8, 10, 0.9);
+      border-radius: 24px;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(0, 242, 255, 0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background-grid"></div>
+
+  <div class="gateway-container">
+    <div class="loading-overlay" id="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="header">
+      <div class="logo">MISSION CONTROL</div>
+      <div class="subtitle">Secure Authentication Portal</div>
+    </div>
+
+    <div id="loginForm">
+      <div class="role-selector">
+        <button class="role-btn operator-role active" onclick="setRole('operator1', this)">
+          <i class="fas fa-headset"></i>
+          <span>Operator</span>
+        </button>
+        <button class="role-btn supervisor-role" onclick="setRole('supervisor1', this)">
+          <i class="fas fa-user-shield"></i>
+          <span>Supervisor</span>
+        </button>
+        <button class="role-btn admin-role" onclick="setRole('admin1', this)">
+          <i class="fas fa-crown"></i>
+          <span>Admin</span>
+        </button>
+      </div>
+
+      <div class="input-group">
+        <label>Encrypted Identity</label>
+        <input id="u" value="operator1" placeholder="Username" readonly />
+      </div>
+
+      <div class="input-group">
+        <label>Security Key</label>
+        <input id="p" type="password" placeholder="Passphrase" />
+      </div>
+
+      <button class="login-btn" onclick="handleLogin()">Authorize Access</button>
+      <div class="err-msg" id="err"></div>
+    </div>
+
+    <div id="mfaForm" style="display: none;">
+      <div style="text-align: center; margin-bottom: 25px;">
+        <i class="fas fa-mobile-alt" style="font-size: 40px; color: var(--accent); margin-bottom: 15px;"></i>
+        <h3>MFA Verification</h3>
+        <p style="font-size: 12px; color: var(--text-dim);">Enter the 4-digit code sent to your secure satellite relay.
+          (Hint: 1234)</p>
+      </div>
+
+      <div class="input-group">
+        <input id="otp" class="mfa-input" maxlength="4" placeholder="0000"
+          onkeyup="if(this.value.length === 4) handleMFA()" />
+      </div>
+
+      <button class="login-btn" style="background: var(--success); color: white;" onclick="handleMFA()">Verify
+        Token</button>
+      <div class="err-msg" id="errMFA"></div>
+    </div>
+
+    <div class="hint-text">
+      Protected by ISRO NavIC Security Framework & MeitY Standards
+    </div>
+  </div>
+
+  <script>
+    let tempToken = "";
+    let tempRole = "";
+    let tempUser = "";
+
+    function setRole(user, btn) {
+      document.getElementById('u').value = user;
+      document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('p').value = "";
+      document.getElementById('p').focus();
+    }
+
+    async function handleLogin() {
+      const username = document.getElementById('u').value;
+      const password = document.getElementById('p').value;
+      const err = document.getElementById('err');
+      const loader = document.getElementById('loading');
+
+      err.textContent = "";
+
+      if (password !== "admin123") {
+        err.textContent = "Invalid Security Key. Access Denied.";
+        return;
+      }
+
+      loader.style.display = "flex";
+
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        loader.style.display = "none";
+
+        if (!res.ok) {
+          err.textContent = data.error || "Authentication failed.";
+          return;
+        }
+
+        tempToken = data.token;
+        tempRole = data.role;
+        tempUser = username;
+
+        // Auto-approve MFA for demo/production readiness as per user simplified password request
+        sessionStorage.setItem("RSECS_TOKEN", tempToken);
+        sessionStorage.setItem("RSECS_ROLE", tempRole);
+        sessionStorage.setItem("RSECS_USER", tempUser);
+        window.location.href = "index.html";
+      } catch (e) {
+        loader.style.display = "none";
+        err.textContent = "Security gateway unreachable.";
+      }
+    }
+  </script>
+</body>
+
+</html>

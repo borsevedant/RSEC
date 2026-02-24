@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R-SECS | Emergency Panic Button</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- PASSWORD GATE -->
+    <div id="passwordGate"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:#08080a; z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; font-family:'Outfit',sans-serif;">
+        <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:24px; font-weight:800; color:#00f2ff; letter-spacing:2px; margin-bottom:10px;">R-SECS
+                GATEWAY</div>
+            <div style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:3px;">USER AUTHENTICATION
+            </div>
+        </div>
+        <div
+            style="background:#121214; padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.1); width:300px; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+            <div style="margin-bottom:15px;">
+                <label
+                    style="display:block; font-size:11px; color:#888; margin-bottom:8px; text-transform:uppercase;">Access
+                    Key</label>
+                <input id="gatePass" type="password" placeholder="Passphrase"
+                    style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:14px; color:white; outline:none; box-sizing:border-box;">
+            </div>
+            <button onclick="checkPass()"
+                style="width:100%; background:#ff3b30; color:white; border:none; border-radius:12px; padding:16px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; transition:0.3s;">Verify
+                Key</button>
+            <div id="gateErr" style="color:#ff3b30; font-size:11px; margin-top:10px; text-align:center;"></div>
+        </div>
+        <div style="font-size:10px; color:#444; margin-top:20px;">MISSION CRITICAL SECURITY PORTAL</div>
+    </div>
+
+    <div id="mainContent" style="display:none;">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="header-overlay">
+        <button class="menu-btn" onclick="openLanguageModal()">
+            <i class="fas fa-language"></i>
+            <span id="currentLangLabel">ENGLISH</span>
+        </button>
+        <div class="logo-mini">R-SECS</div>
+    </div>
+
+    <!-- LANGUAGE MODAL -->
+    <div id="languageModal" class="modal hidden">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Select Language</h2>
+                <button class="close-modal" onclick="closeLanguageModal()">&times;</button>
+            </div>
+            <div class="lang-grid" id="langGrid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- STAGE 1: PANIC -->
+    <div id="panicStage" class="stage">
+        <div class="panic-container">
+            <div class="panic-circle" onclick="openPinModal()">
+                <div class="panic-inner">
+                    <i class="fas fa-hand-pointer"></i>
+                    <span data-i18n="emergency">EMERGENCY</span>
+                </div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring-2"></div>
+            </div>
+        </div>
+        <p class="instruction-text" data-i18n="tapHelp">HOLD TO REQUEST IMMEDIATE ASSISTANCE</p>
+    </div>
+
+    <!-- STAGE 2: PIN MODAL -->
+    <div id="pinModal" class="stage hidden">
+        <div class="glass-card">
+            <h1 data-i18n="enterPin">Secure Access</h1>
+            <p data-i18n="verifyIdentity">Security check to prevent false alarms</p>
+            <div id="pinDisplay" class="pin-display"></div>
+            <div class="keypad-grid">
+                <button class="key" onclick="enterDigit('1')">1</button>
+                <button class="key" onclick="enterDigit('2')">2</button>
+                <button class="key" onclick="enterDigit('3')">3</button>
+                <button class="key" onclick="enterDigit('4')">4</button>
+                <button class="key" onclick="enterDigit('5')">5</button>
+                <button class="key" onclick="enterDigit('6')">6</button>
+                <button class="key" onclick="enterDigit('7')">7</button>
+                <button class="key" onclick="enterDigit('8')">8</button>
+                <button class="key" onclick="enterDigit('9')">9</button>
+                <button class="key key-cancel" onclick="cancelAlert()"><i class="fas fa-times"></i></button>
+                <button class="key" onclick="enterDigit('0')">0</button>
+                <button class="key" onclick="backspace()"><i class="fas fa-backspace"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAGE 3: SELECT TYPE -->
+    <div id="typeStage" class="stage hidden">
+        <div class="glass-card full-width">
+            <h1 data-i18n="selectEmergency">Dispatch Services</h1>
+            <p data-i18n="whatHelp">Select the required response units</p>
+
+            <div class="type-grid">
+                <button class="type-btn" onclick="selectType('Medical')">
+                    <div class="icon-circle medical"><i class="fas fa-ambulance"></i></div>
+                    <span data-i18n="medical">Medical</span>
+                </button>
+                <button class="type-btn" onclick="selectType('Fire')">
+                    <div class="icon-circle fire"><i class="fas fa-fire-extinguisher"></i></div>
+                    <span data-i18n="fire">Fire</span>
+                </button>
+                <button class="type-btn" onclick="selectType('Crime')">
+                    <div class="icon-circle crime"><i class="fas fa-shield-halved"></i></div>
+                    <span data-i18n="crime">Police</span>
+                </button>
+                <button class="type-btn" onclick="selectType('Disaster')">
+                    <div class="icon-circle disaster"><i class="fas fa-cloud-showers-heavy"></i></div>
+                    <span data-i18n="disaster">Disaster</span>
+                </button>
+            </div>
+
+            <div class="cancel-link" onclick="resetToPanic()" data-i18n="cancel">Cancel Alert Request</div>
+        </div>
+    </div>
+
+    <!-- STAGE 4: SUCCESS / TRACKING -->
+    <div id="successScreen" class="stage hidden">
+        <div class="glass-card status-box">
+            <div class="success-icon-wrapper">
+                <i class="fas fa-satellite-dish fa-spin"></i>
+            </div>
+            <h1 data-i18n="alertSent">Alert Transmitted</h1>
+            <p data-i18n="helpOnWay">Satellite tracking active. Responders are moving to your coordinates.</p>
+
+            <div class="status-monitor">
+                <div class="status-row">
+                    <span>GPS STATUS</span>
+                    <span class="active-tag">CONNECTED</span>
+                </div>
+                <div id="locationText" class="coords-display">Synchronizing location...</div>
+            </div>
+
+            <div id="recordContainer" class="record-container">
+                <p style="font-size:12px; margin-bottom:10px; opacity:0.8;">Send a voice message to the Control Room</p>
+                <div class="record-controls">
+                    <button id="recordBtn" class="record-btn" onclick="toggleRecording()" disabled>
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <div id="recordStatus" class="record-status" style="opacity:0.5;">WAITING FOR SATELLITE...</div>
+                </div>
+                <div id="recordTimer" class="record-timer hidden">00:00</div>
+            </div>
+        </div>
+        <div class="reset-btn" onclick="location.reload()" data-i18n="returnHome">Back to Safety</div>
+    </div>
+
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
