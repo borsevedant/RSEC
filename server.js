@@ -480,6 +480,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/user", (req, res) => {
+  res.redirect("/user/");
+});
+
+app.get("/user/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "user", "index.html"));
 });
 
@@ -489,6 +493,10 @@ app.get("/user/*", (req, res) => {
 });
 
 app.get("/admin", (req, res) => {
+  res.redirect("/admin/");
+});
+
+app.get("/admin/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin", "index.html"));
 });
 
