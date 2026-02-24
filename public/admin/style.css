@@ -267,14 +267,15 @@ body::after {
 
 .incident-feed {
     flex: 1;
-    overflow-y: auto !important;
+    overflow-y: scroll !important;
     min-height: 0;
+    max-height: calc(100vh - 120px);
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) rgba(0, 0, 0, 0.5);
+    scrollbar-width: auto;
+    scrollbar-color: var(--accent) #000;
 }
 
 .incident-feed::-webkit-scrollbar {
