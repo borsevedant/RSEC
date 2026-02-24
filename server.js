@@ -91,8 +91,8 @@ function addToAuditLog(emergency, action, by, details = {}) {
    AUTH LOGIC
 ========================= */
 const users = {
-  "operator1": { password: "operator@123", role: "operator" },
-  "supervisor1": { password: "supervisor@123", role: "supervisor" },
+  "operator1": { password: "admin@123", role: "operator" },
+  "supervisor1": { password: "admin@123", role: "supervisor" },
   "admin1": { password: "admin@123", role: "admin" },
   "admin": { password: "admin@123", role: "admin" }
 };
