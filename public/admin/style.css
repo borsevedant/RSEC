@@ -228,7 +228,8 @@ body::after {
     display: flex;
     flex-direction: column;
     z-index: 20;
-    min-height: 0;
+    height: calc(100vh - 60px);
+    overflow: hidden;
 }
 
 .sidebar-header {
@@ -265,25 +266,27 @@ body::after {
 
 .incident-feed {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 120px);
     padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    scrollbar-width: thin;
+    gap: 15px;
+    scrollbar-width: auto;
     scrollbar-color: var(--accent) #000;
 }
 
 .incident-feed::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 .incident-feed::-webkit-scrollbar-track {
-    background: #000;
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .incident-feed::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: var(--accent);
+    border-radius: 4px;
     border: 2px solid #000;
 }
 
