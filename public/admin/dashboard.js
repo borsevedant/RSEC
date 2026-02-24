@@ -215,6 +215,7 @@ function updateDashboardUI() {
       // If not, we might need to find the correct spot, but for now let's just prepend to top.
       // Actually, to keep order correct, we should ideally re-sort DOM, but that's expensive.
       // "Live Feed" style: Newest on top.
+      card.classList.add('new-incident');
 
       const nextSibling = listContainer.children[index];
       if (nextSibling) {
@@ -223,6 +224,7 @@ function updateDashboardUI() {
         listContainer.appendChild(card);
       }
 
+      setTimeout(() => card.classList.remove('new-incident'), 600);
     } else {
       // Update marker and card data
       updateEmergencyCard(card, emergency);

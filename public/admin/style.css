@@ -274,26 +274,26 @@ body::after {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    scrollbar-width: auto;
-    scrollbar-color: var(--accent) #000;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .incident-feed::-webkit-scrollbar {
-    width: 12px;
+    width: 6px;
 }
 
 .incident-feed::-webkit-scrollbar-track {
-    background: #000;
+    background: transparent;
 }
 
 .incident-feed::-webkit-scrollbar-thumb {
-    background: var(--accent);
-    border-radius: 6px;
-    border: 3px solid #000;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    border: none;
 }
 
 .incident-feed::-webkit-scrollbar-thumb:hover {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.4);
 }
 
 /* Emergency Card High-Tech */
@@ -345,6 +345,22 @@ body::after {
     50% {
         border-color: rgba(255, 51, 51, 0.8);
     }
+}
+
+@keyframes slideDownAndFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.emergency-card.new-incident {
+    animation: slideDownAndFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .card-header {
