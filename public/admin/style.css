@@ -305,6 +305,7 @@ body::after {
     position: relative;
     overflow: hidden;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 .emergency-card::before {
