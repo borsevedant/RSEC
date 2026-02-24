@@ -9,7 +9,11 @@ const PORT = process.env.PORT || 5002;
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));
-app.use(express.static("public"));
+
+// Static middleware for sub-directories to handle relative asset paths
+app.use("/user", express.static(path.join(__dirname, "public", "user")));
+app.use("/admin", express.static(path.join(__dirname, "public", "admin")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Limit in-memory storage
 const MAX_EMERGENCIES = 1000;
@@ -479,7 +483,16 @@ app.get("/user", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "user", "index.html"));
 });
 
+// Alias for common sub-paths
+app.get("/user/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "user", "index.html"));
+});
+
 app.get("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin", "index.html"));
+});
+
+app.get("/admin/*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin", "index.html"));
 });
 
