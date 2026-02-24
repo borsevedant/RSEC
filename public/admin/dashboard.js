@@ -14,6 +14,11 @@ if (!token) {
   }
 }
 
+// Ensure map recalculates on window resize
+window.addEventListener('resize', () => {
+  if (window.map) map.invalidateSize();
+});
+
 // UI Elements
 const who = document.getElementById("who");
 if (who) who.textContent = user;
