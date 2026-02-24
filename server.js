@@ -318,7 +318,7 @@ app.post("/api/emergency", (req, res) => {
   });
 });
 
-app.post("/api/emergency/:id/audio", (req, res) => {
+app.patch("/api/emergency/:id/audio", (req, res) => {
   const { id } = req.params;
   const { audioData } = req.body;
   const e = findEmergency(id);

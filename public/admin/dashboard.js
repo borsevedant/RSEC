@@ -378,43 +378,22 @@ function updateEmergencyCardHTML(card, data) {
         -->
         </div>
 
-        <div class="dispatch-controls" id="compliance-tools-${data.id}"></div>
-        
         ${data.audioMessage ? `
-        <div class="audio-message-box">
-            <button class="play-btn" onclick="playAudio('${data.id}')">
-                <i class="fas fa-play"></i> PLAY VOICE MESSAGE
+        <div class="audio-message-box" style="margin-top:10px;">
+            <button class="play-btn" onclick="playAudio('${data.id}')" style="width:100%; height:80px; font-size:14px; background:rgba(0,242,255,0.1); border:2px solid var(--accent);">
+                <i class="fas fa-microphone-alt" style="font-size:24px; margin-bottom:8px;"></i><br>
+                LISTEN TO EMERGENCY VOICE MESSAGE
             </button>
             <audio id="audio-${data.id}" src="${data.audioMessage}"></audio>
         </div>
-        ` : ''}
+        ` : `
+        <button class="dispatch-btn" style="width:100%; color:var(--text-dim); border-style:dashed;" onclick="verifyAuditTrail('${data.id}')">
+            <i class="fas fa-shield-halved"></i> VERIFY LOG
+        </button>
+        `}
 
         <div class="dispatch-controls" id="dispatch-area-${data.id}"></div>
     `;
-
-  // 1. Compliance Tools
-  const toolArea = card.querySelector(`#compliance-tools-${data.id}`);
-
-  const reportBtn = document.createElement('button');
-  reportBtn.className = 'dispatch-btn';
-  reportBtn.innerHTML = '<i class="fas fa-file-invoice"></i> REPORT';
-  reportBtn.onclick = () => window.open(`/report/${data.id}?token=${token}`, '_blank');
-
-  const capBtn = document.createElement('button');
-  capBtn.className = 'dispatch-btn';
-  capBtn.innerHTML = '<i class="fas fa-file-code"></i> CAP';
-  capBtn.onclick = () => window.open(`/api/emergency/${data.id}/cap?token=${token}`, '_blank');
-
-  toolArea.appendChild(reportBtn);
-  toolArea.appendChild(capBtn);
-
-  const verifyBtn = document.createElement('button');
-  verifyBtn.className = 'dispatch-btn';
-  verifyBtn.style.width = '100%';
-  verifyBtn.style.color = 'var(--accent)';
-  verifyBtn.innerHTML = '<i class="fas fa-shield-halved"></i> VERIFY LOG';
-  verifyBtn.onclick = () => verifyAuditTrail(data.id);
-  card.appendChild(verifyBtn);
 
   // 2. Dispatch Area
   if (data.status !== 'Dispatched' && data.status !== 'Closed') {
