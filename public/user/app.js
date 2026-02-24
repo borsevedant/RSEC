@@ -1,5 +1,5 @@
 let currentEmergencyType = '';
-let pin = '1234';
+let pin = '';
 const correctPin = '1234';
 const deviceId = "RSECS-001";
 
@@ -445,7 +445,7 @@ async function uploadAudio(audioData) {
 function checkPass() {
   const pass = document.getElementById('gatePass').value;
   const err = document.getElementById('gateErr');
-  if (pass === "admin123") {
+  if (pass === "1234") {
     sessionStorage.setItem("RSECS_USER_AUTH", "true");
     document.getElementById('passwordGate').style.display = "none";
     document.getElementById('mainContent').style.display = "block";
