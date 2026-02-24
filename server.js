@@ -141,7 +141,7 @@ function requireRole(minRole) {
    Emergency store
 ========================= */
 let emergencies = [];
-let nextId = 1;
+let nextId = Date.now();
 const lastAlertByDevice = new Map();
 const COOLDOWN_MS = 60 * 1000;
 const ESCALATE_AFTER_SEC = 30;

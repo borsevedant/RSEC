@@ -235,6 +235,7 @@ function updateDashboardUI() {
       if (currentIdx !== index) {
         const nextSibling = listContainer.children[index];
         if (nextSibling) listContainer.insertBefore(card, nextSibling);
+        else listContainer.appendChild(card);
       }
     }
 
@@ -378,7 +379,6 @@ function updateEmergencyCardHTML(card, data) {
             ${allVolunteers.filter(v => Math.abs(v.coords.lat - data.coords.lat) < 0.1 && Math.abs(v.coords.lng - data.coords.lng) < 0.1).length === 0 ? '<p style="font-size:9px; opacity:0.5;">No volunteers in vicinity.</p>' : ''}
         </div>
         -->
-        </div>
 
         ${data.audioMessage ? `
         <div class="audio-message-box" style="margin-top:10px;">
