@@ -380,19 +380,29 @@ function updateEmergencyCardHTML(card, data) {
 
         ${data.audioMessage ? `
         <div class="audio-message-box" style="margin-top:10px;">
-            <button class="play-btn" onclick="playAudio('${data.id}')" style="width:100%; height:80px; font-size:14px; background:rgba(0,242,255,0.1); border:2px solid var(--accent);">
-                <i class="fas fa-microphone-alt" style="font-size:24px; margin-bottom:8px;"></i><br>
-                LISTEN TO EMERGENCY VOICE MESSAGE
+            <button class="play-btn" onclick="playAudio('${data.id}')" style="width:100%; height:70px; font-size:13px; background:rgba(0,242,255,0.1); border:2px solid var(--accent); border-radius:10px;">
+                <i class="fas fa-microphone-alt" style="font-size:20px; margin-bottom:4px;"></i><br>
+                LISTEN TO VOICE MESSAGE
             </button>
             <audio id="audio-${data.id}" src="${data.audioMessage}"></audio>
         </div>
-        ` : `
-        <button class="dispatch-btn" style="width:100%; color:var(--text-dim); border-style:dashed;" onclick="verifyAuditTrail('${data.id}')">
-            <i class="fas fa-shield-halved"></i> VERIFY LOG
-        </button>
-        `}
+        ` : ''}
 
-        <div class="dispatch-controls" id="dispatch-area-${data.id}"></div>
+        <!-- Compliance & Reports Area -->
+        <div class="dispatch-controls" style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+            <button class="dispatch-btn" onclick="window.open('/report/${data.id}?token=${token}', '_blank')">
+                <i class="fas fa-file-invoice"></i> REPORT
+            </button>
+            <button class="dispatch-btn" onclick="window.open('/api/emergency/${data.id}/cap?token=${token}', '_blank')">
+                <i class="fas fa-file-code"></i> CAP
+            </button>
+        </div>
+
+        <button class="dispatch-btn" style="width:100%; margin-top:8px; color:var(--accent); border-style:dashed;" onclick="verifyAuditTrail('${data.id}')">
+            <i class="fas fa-shield-halved"></i> VERIFY AUDIT LOG
+        </button>
+
+        <div class="dispatch-controls" id="dispatch-area-${data.id}" style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;"></div>
     `;
 
   // 2. Dispatch Area
